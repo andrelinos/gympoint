@@ -1,6 +1,6 @@
 # gympoint
 
-Aplicação criada em: Iniciando Aplicação -  Desafio 02
+Aplicação criada em: Iniciando Aplicação -  Desafio
 
 ## Ferramentas usadas:
 - Sucrase + Nodemon;
