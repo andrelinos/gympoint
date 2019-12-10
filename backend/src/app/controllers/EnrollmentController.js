@@ -115,12 +115,6 @@ class EnrollmentController {
       where: { student_id },
     });
 
-    if (enrollmentExists) {
-      return res.status(401).json({
-        error: 'A enrollment with this student already exists.',
-      });
-    }
-
     // Verify student exists
     const student = await Student.findByPk(student_id);
     if (!student) {
@@ -147,15 +141,15 @@ class EnrollmentController {
     const end_date = addMonths(startDate, duration);
     const Price = duration * price;
 
-    const enrollment = await Enrollment.update({
+    const enrollment = await plan.update({
       student_id,
       plan_id,
       start_date,
-      end_date,
       price: Price,
     });
 
     return res.json(enrollment);
+
   }
 
   /**
