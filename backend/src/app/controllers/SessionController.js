@@ -38,7 +38,6 @@ class SessionController {
         email,
       },
       token: jwt.sign({ id }, authConfig.secret, {
-        // rocketseatgostack2019desafio2),
         expiresIn: authConfig.expiresIn,
       }),
     });

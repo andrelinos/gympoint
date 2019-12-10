@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('students', {
+    return queryInterface.createTable('users', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -16,16 +16,13 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      idade: {
+      password_hash: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      peso: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      altura: {
-        type: Sequelize.STRING,
+      admin: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
       },
       created_at: {
@@ -40,6 +37,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('students');
+    return queryInterface.dropTable('users');
   },
 };

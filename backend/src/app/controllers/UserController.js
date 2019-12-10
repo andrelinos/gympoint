@@ -2,6 +2,27 @@ import * as Yup from 'yup';
 import User from '../models/User';
 
 class UserController {
+  async index(req, res) {
+    try {
+      const { page = 1, quantity = 20 } = req.query;
+
+      const { rows: users } = await User.findAndCountAll({
+        limit: quantity,
+        offset: (page - 1) * quantity,
+      });
+
+      if (!users) {
+        return res.status(400).json({ error: 'No users found.' });
+      }
+      return res.json(users);
+    } catch (err) {
+      return res.status(400).json({ error: 'No users found.' });
+    }
+  }
+
+  /**
+   * Create User
+   */
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -33,6 +54,9 @@ class UserController {
     });
   }
 
+  /**
+   * Update User
+   */
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
