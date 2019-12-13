@@ -1,40 +1,42 @@
 import * as Yup from 'yup';
+import { startOfHour, addMonths, parseISO, isAfter } from 'date-fns';
+
+import CheckIn from '../models/CheckIn';
 import Student from '../models/Student';
-import HelpOrder from '../models/Checkin';
+
+// import UserControler from './UserControler';
 
 class CheckInController {
+  /**
+   *  List checkins
+   */
   async index(req, res) {
-    return res.json();
-  }
+    try {
+      const { page = 1, quantity = 20 } = req.query;
 
-  async store(req, res) {
-    const schema = Yup.object().shape({
-      student_id: Yup.number().required(),
-    });
+      const { student_id } = req.params;
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'validation fails' });
+      const student = await Student.findByPk(student_id);
+
+      if (!student) {
+        return res.status(400).json({ error: 'Student not found.' });
+      }
+
+      const { checkins } = await CheckIn.findAll({
+        where: { student_id },
+        attributes: ['id', 'created_at'],
+        limit: quantity,
+        offset: (page - 1) * quantity,
+        order: [['created_at', 'DESC']],
+      });
+
+      if (!checkins) {
+        return res.status(400).json({ error: 'No checkins found.' });
+      }
+      return res.json(checkins);
+    } catch (err) {
+      return res.status(400).json({ error: `Applications error. ( ) ` });
     }
-
-    const { student_id, date } = req.body;
-
-    /**
-     *  Check if user is student
-     */
-
-    const checkIsStudent = await Student.findOne({
-      where: { id: student_id, student: true },
-    });
-
-    if (!checkIsStudent) {
-      return res.status(401).json({ error: 'You not a student.' });
-    }
-
-    const helporder = await HelpOrder.create({
-      student_id: req.studentId,
-    });
-    return res.json(helporder);
   }
 }
-
 export default new CheckInController();

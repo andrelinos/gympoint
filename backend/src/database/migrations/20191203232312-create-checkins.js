@@ -8,18 +8,16 @@ module.exports = {
         primaryKey: true,
       },
       student_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: { model: 'students', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
       },
       updated_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      canceled_at: {
         type: Sequelize.DATE,
         allowNull: false,
       },

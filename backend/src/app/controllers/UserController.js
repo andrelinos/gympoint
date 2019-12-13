@@ -16,7 +16,7 @@ class UserController {
       }
       return res.json(users);
     } catch (err) {
-      return res.status(400).json({ error: 'No users found.' });
+      return res.status(400).json({ error: 'Unknown error listing students.' });
     }
   }
 

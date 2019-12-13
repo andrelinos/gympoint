@@ -13,6 +13,7 @@ class StudentController {
     const { rows: students } = await Student.findAndCountAll({
       limit: quantity,
       offset: (page - 1) * quantity,
+      order: [['created_at', 'DESC']],
     });
 
     if (!students) {
