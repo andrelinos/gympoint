@@ -111,6 +111,8 @@ class EnrollmentController {
     const { student_id, plan_id, start_date } = req.body;
 
     // Check if this student already has an enrollment
+
+    // eslint-disable-next-line no-unused-vars
     const enrollmentExists = await Enrollment.findOne({
       where: { student_id },
     });
@@ -138,7 +140,8 @@ class EnrollmentController {
     const { price, duration } = plan;
     const startDate = startOfHour(parsedDate);
 
-    const end_date = addMonths(startDate, duration);
+    // eslint-disable-next-line no-unused-vars
+    const and_date = addMonths(startDate, duration);
     const Price = duration * price;
 
     const enrollment = await plan.update({
@@ -149,7 +152,6 @@ class EnrollmentController {
     });
 
     return res.json(enrollment);
-
   }
 
   /**

@@ -1,6 +1,8 @@
 {
   "name": "gympoint",
   "version": "1.0.0",
+  "email": "name@example.com",
+  "url": "http://example.com",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
