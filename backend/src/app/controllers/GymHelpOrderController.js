@@ -1,39 +1,79 @@
 import * as Yup from 'yup';
 import Student from '../models/Student';
-import HelpOrder from '../models/GymHelpOrder';
+import HelpOrder from '../models/HelpOrder';
 
 class HelpOrderController {
+  /**
+   *  List help orders
+   */
   async index(req, res) {
-    return res.json();
+    const { page = 1, quantity = 20 } = req.query;
+
+    const { rows: helporders } = await HelpOrder.findAndCountAll({
+      where: { answered_at: null },
+      limit: quantity,
+      offset: (page - 1) * quantity,
+      order: [['created_at', 'ASC']],
+    });
+
+    if (!helporders) {
+      return res.status(400).json({ error: 'No users found.' });
+    }
+
+    return res.json(helporders);
   }
 
-  async store(req, res) {
-    const schema = Yup.object().shape({
-      student_id: Yup.number().required(),
-    });
+  /**
+   *  List answer orders
+   */
+  async update(req, res) {
+    const validateSchema = requestBody => {
+      const schema = Yup.object().shape({
+        answer: Yup.string().required(),
+      });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'validation fails' });
+      return schema.isValid(requestBody);
+    };
+
+    if (!(await validateSchema(req.body))) {
+      return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    const { student_id, date } = req.body;
+    const { id } = req.params;
+    /* const helporders = await HelpOrder.findByPk(id, {
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id'],
+        },
+      ],
+    }); */
 
-    /**
-     *  Check if user is student
+    const helporders = await HelpOrder.findByPk(id, { where: { id } });
+
+    if (!helporders) {
+      return res.status(400).json({ error: 'Help order not found.' });
+    }
+
+    if (helporders.answer) {
+      return res
+        .status(400)
+        .json({ error: 'Help order has already been answered.' });
+    }
+
+    const { answer } = req.body;
+
+    helporders.answer = answer;
+    helporders.answered_at = new Date();
+    helporders.save();
+
+    /* await queueMicrotask.add(HelpOrderAnswerMails.key, {
+      helporders,
+    });
      */
 
-    const checkIsStudent = await Student.findOne({
-      where: { id: student_id, student: true },
-    });
-
-    if (!checkIsStudent) {
-      return res.status(401).json({ error: 'You not a student.' });
-    }
-
-    const helporder = await HelpOrder.create({
-      student_id: req.studentId,
-    });
-    return res.json(helporder);
+    return res.json(helporders);
   }
 }
 
