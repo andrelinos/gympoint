@@ -9,7 +9,7 @@ import CheckIn from '../app/models/CheckIn';
 
 import databaseConfig from '../config/database';
 
-const models = [Student, User, Plan, Enrollment, HelpOrder, CheckIn];
+const models = [Student, User, Plan, Enrollment, CheckIn, HelpOrder];
 
 class Database {
   constructor() {

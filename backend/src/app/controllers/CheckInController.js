@@ -12,19 +12,20 @@ class CheckInController {
    *  List checkins
    */
   async index(req, res) {
-    const { page = 1, quantity = 20, id } = req.query;
+    const { page = 1, quantity = 20 } = req.query;
+    const { student_id } = req.params;
 
+    const students = await Student.findByPk(student_id);
+
+    if (!students) {
+      return res.status(400).json({ error: 'Student not found.' });
+    }
     const checkins = await CheckIn.findAll({
-      where: { student_id: id },
+      where: { student_id },
       limit: quantity,
       offset: (page - 1) * quantity,
-      include: [
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['id', 'name', 'email'],
-        },
-      ],
+      attributes: ['id', 'created_at'],
+      order: [['created_at', 'DESC']],
     });
 
     return res.json(checkins);
@@ -41,7 +42,7 @@ class CheckInController {
     if (!isStudentAble || !isAfter(isStudentAble.end_date, new Date())) {
       return res
         .status(401)
-        .json({ error: 'Your enrollment is not able to join the gym' });
+        .json({ error: 'Your enrollment is not active to join the gym.' });
     }
 
     const checkins = await CheckIn.findAll({

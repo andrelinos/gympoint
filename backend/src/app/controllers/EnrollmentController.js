@@ -12,22 +12,15 @@ class EnrollmentController {
    *  List Enrollments
    */
   async index(req, res) {
-    try {
-      const { page = 1, quantity = 20 } = req.query;
+    const { page = 1, quantity = 20 } = req.query;
 
-      const { rows: enrollments } = await Enrollment.findAndCountAll({
-        limit: quantity,
-        offset: (page - 1) * quantity,
-        order: [['created_at', 'DESC']],
-      });
+    const { rows: enrollments } = await Enrollment.findAndCountAll({
+      limit: quantity,
+      offset: (page - 1) * quantity,
+      order: [['created_at', 'DESC']],
+    });
 
-      if (!enrollments) {
-        return res.status(400).json({ error: 'No enrollments found.' });
-      }
-      return res.json(enrollments);
-    } catch (err) {
-      return res.status(400).json({ error: 'Application faled.' });
-    }
+    return res.json(enrollments);
   }
 
   /**
