@@ -19,8 +19,7 @@ routes.post('/students/:id/checkins', CheckInController.store);
 
 routes.post('/enrollments', EnrollmentController.store);
 
-routes.get('/helporders', StudentHelpOrderController.index);
-routes.post('/helporders', StudentHelpOrderController.store);
+routes.post('/students/:id/help-orders', StudentHelpOrderController.store);
 
 /**
  * Only User Logged Below
@@ -43,5 +42,7 @@ routes.delete('/plans/:id', PlanController.delete);
 routes.get('/enrollments', EnrollmentController.index);
 routes.put('/enrollments/:id', EnrollmentController.update);
 routes.delete('/enrollments/:id', EnrollmentController.delete);
+
+routes.get('/students/:id/help-orders', StudentHelpOrderController.index);
 
 export default routes;

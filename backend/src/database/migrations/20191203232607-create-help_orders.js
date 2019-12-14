@@ -27,11 +27,9 @@ module.exports = {
       },
       answer: {
         type: Sequelize.STRING,
-        allowNull: true,
       },
       answered_at: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -40,10 +38,6 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-      canceled_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
       },
     });
   },

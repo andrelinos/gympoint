@@ -36,6 +36,9 @@ class CheckInController {
     return res.json(checkins);
   }
 
+  /**
+   *  Create checkins
+   */
   async store(req, res) {
     const { id } = req.params;
 

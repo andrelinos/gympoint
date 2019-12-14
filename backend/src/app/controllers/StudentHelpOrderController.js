@@ -1,40 +1,71 @@
+import { subDays, isAfter, addDays, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Student from '../models/Student';
-import HelpOrder from '../models/StudentHelpOrder';
+import HelpOrder from '../models/HelpOrder';
 
-class HelpOrderController {
+// import UserControler from './UserControler';
+
+class StudentHelpOrder {
+  /**
+   *  List help orders
+   */
   async index(req, res) {
-    return res.json();
+    const { id } = req.params;
+
+    // Check if student exist
+    const students = await Student.findByPk(id);
+    if (!students) {
+      return res.status(400).json({ error: 'Student not found.' });
+    }
+
+    // Check if help orders
+    const helporders = await HelpOrder.findByPk(id);
+    if (!helporders) {
+      return res.status(400).json({ error: 'No help orders found.' });
+    }
+
+    return res.json(helporders);
   }
 
+  /**
+   *  List help orders
+   */
   async store(req, res) {
-    const schema = Yup.object().shape({
-      student_id: Yup.number().required(),
-    });
+    const validateSchema = requestBody => {
+      const schema = Yup.object().shape({
+        question: Yup.string().required(),
+      });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'validation fails' });
+      return schema.isValid(requestBody);
+    };
+
+    if (!(await validateSchema(req.body))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+    const { id } = req.params;
+    const students = await Student.findByPk(id);
+
+    if (!students) {
+      return res.status(400).json({ error: 'No stundent found.' });
     }
 
-    const { student_id, date } = req.body;
-
-    /**
-     *  Check if user is student
-     */
-
-    const checkIsStudent = await Student.findOne({
-      where: { id: student_id, student: true },
+    const helpOrderExists = await HelpOrder.findOne({
+      where: { question: req.body.question },
     });
 
-    if (!checkIsStudent) {
-      return res.status(401).json({ error: 'You not a student.' });
+    if (helpOrderExists) {
+      return res.status(400).json({ error: 'Help order already exists.' });
     }
 
-    const helporder = await HelpOrder.create({
-      student_id: req.studentId,
+    const helpOrder = await HelpOrder.create({
+      id,
+      question: req.body.question,
     });
-    return res.json(helporder);
+
+    return res.json(helpOrder);
   }
 }
 
-export default new HelpOrderController();
+export default new StudentHelpOrder();

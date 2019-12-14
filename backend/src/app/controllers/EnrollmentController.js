@@ -14,6 +14,11 @@ class EnrollmentController {
   async index(req, res) {
     const { page = 1, quantity = 20 } = req.query;
 
+    const enrollmentCheck = await Enrollment.findByPk(req.params.id);
+    if (!enrollmentCheck) {
+      return res.status(400).json({ error: 'No enrollment found.' });
+    }
+
     const { rows: enrollments } = await Enrollment.findAndCountAll({
       limit: quantity,
       offset: (page - 1) * quantity,
@@ -58,9 +63,9 @@ class EnrollmentController {
     }
 
     // Verify plan exists
-    const plan = await Plan.findByPk(plan_id);
-    if (!plan) {
-      return res.status(400).json({ error: 'No plan found.' });
+    const enrollmentCheck = await Enrollment.findByPk(plan_id);
+    if (!enrollmentCheck) {
+      return res.status(400).json({ error: 'No enrollment found.' });
     }
 
     const parsedDate = parseISO(start_date);
@@ -71,13 +76,13 @@ class EnrollmentController {
     }
 
     // Calculate  date range and price
-    const { price, duration } = plan;
+    const { price, duration } = Enrollment;
     const startDate = startOfHour(parsedDate);
 
     const end_date = addMonths(startDate, duration);
     const Price = duration * price;
 
-    const enrollment = await Enrollment.create({
+    const enrollments = await Enrollment.create({
       student_id,
       plan_id,
       start_date,
@@ -85,7 +90,7 @@ class EnrollmentController {
       price: Price,
     });
 
-    return res.json(enrollment);
+    return res.json(enrollments);
   }
 
   /**
@@ -152,15 +157,15 @@ class EnrollmentController {
    *  Delete Enrollment
    */
   async delete(req, res) {
-    const plan = await Plan.findByPk(req.params.id);
+    const enrollments = await Enrollment.findByPk(req.params.id);
 
-    if (!plan) {
-      return res.status(400).json({ error: 'Plan not found.' });
+    if (!enrollments) {
+      return res.status(400).json({ error: 'No enrollment found.' });
     }
 
-    await plan.destroy();
+    await enrollments.destroy();
 
-    return res.status(400).json({ ok: 'Plan deleted successfully!' });
+    return res.status(400).json({ ok: 'Enrollment deleted successfully!' });
 
     // return res.send();
   }
