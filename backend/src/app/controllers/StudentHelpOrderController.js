@@ -44,10 +44,11 @@ class StudentHelpOrder {
     if (!(await validateSchema(req.body))) {
       return res.status(400).json({ error: 'Validation fails.' });
     }
+
+    // Check student exists
     const { id } = req.params;
     const students = await Student.findByPk(id);
 
-    console.log(`ID >>>>>> ${students.id}`);
     if (!students) {
       return res.status(400).json({ error: 'No stundent found.' });
     }
@@ -64,8 +65,12 @@ class StudentHelpOrder {
       return res.status(400).json({ error: 'Help order already exists.' });
     } */
 
+    /**
+     *  Mourabraz
+     */
     const helpOrder = await HelpOrder.create({
       id,
+      student_id: req.studentId,
       question: req.body.question,
     });
 
