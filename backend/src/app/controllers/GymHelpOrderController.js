@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import Student from '../models/Student';
 import HelpOrder from '../models/HelpOrder';
 
 class HelpOrderController {
@@ -40,17 +39,7 @@ class HelpOrderController {
     }
 
     const { id } = req.params;
-    /* const helporders = await HelpOrder.findByPk(id, {
-      include: [
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['id'],
-        },
-      ],
-    }); */
-
-    const helporders = await HelpOrder.findByPk(id, { where: { id } });
+    const helporders = await HelpOrder.findByPk(id);
 
     if (!helporders) {
       return res.status(400).json({ error: 'Help order not found.' });
