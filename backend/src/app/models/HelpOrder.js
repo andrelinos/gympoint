@@ -4,6 +4,7 @@ class HelpOrder extends Model {
   static init(sequelize) {
     super.init(
       {
+        student_id: Sequelize.STRING,
         question: Sequelize.STRING,
         answer: Sequelize.STRING,
         answered_at: Sequelize.DATE,
@@ -17,7 +18,6 @@ class HelpOrder extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
     this.belongsTo(models.Student, { foreignKey: 'student_id', as: 'student' });
   }
 }

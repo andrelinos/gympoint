@@ -47,17 +47,22 @@ class StudentHelpOrder {
     const { id } = req.params;
     const students = await Student.findByPk(id);
 
+    console.log(`ID >>>>>> ${students.id}`);
     if (!students) {
       return res.status(400).json({ error: 'No stundent found.' });
     }
 
-    const helpOrderExists = await HelpOrder.findOne({
-      where: { question: req.body.question },
+    // const { student_id } = await HelpOrder.req.body;
+    /* const helpOrderExists = await HelpOrder.findOne({
+      where: {
+        student_id,
+        question,
+      },
     });
 
     if (helpOrderExists) {
       return res.status(400).json({ error: 'Help order already exists.' });
-    }
+    } */
 
     const helpOrder = await HelpOrder.create({
       id,
