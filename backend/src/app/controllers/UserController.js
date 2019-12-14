@@ -3,21 +3,19 @@ import User from '../models/User';
 
 class UserController {
   async index(req, res) {
-    try {
-      const { page = 1, quantity = 20 } = req.query;
+    const { page = 1, quantity = 20 } = req.query;
 
-      const { rows: users } = await User.findAndCountAll({
-        limit: quantity,
-        offset: (page - 1) * quantity,
-      });
+    const { rows: users } = await User.findAndCountAll({
+      attributes: ['id', 'name', 'email'],
+      limit: quantity,
+      offset: (page - 1) * quantity,
+    });
 
-      if (!users) {
-        return res.status(400).json({ error: 'No users found.' });
-      }
-      return res.json(users);
-    } catch (err) {
-      return res.status(400).json({ error: 'Unknown error listing students.' });
+    if (!users) {
+      return res.status(400).json({ error: 'No users found.' });
     }
+
+    return res.json(users);
   }
 
   /**

@@ -18,6 +18,7 @@ class EnrollmentController {
       const { rows: enrollments } = await Enrollment.findAndCountAll({
         limit: quantity,
         offset: (page - 1) * quantity,
+        order: [['created_at', 'DESC']],
       });
 
       if (!enrollments) {
@@ -25,7 +26,7 @@ class EnrollmentController {
       }
       return res.json(enrollments);
     } catch (err) {
-      return res.status(400).json({ error: 'No enrollments found.' });
+      return res.status(400).json({ error: 'Application faled.' });
     }
   }
 

@@ -15,7 +15,7 @@ const routes = new Router();
 routes.post('/sessions', SessionController.store);
 
 routes.get('/students/:id/checkins', CheckInController.index);
-// routes.post('/students/:student_id/checkins', CheckInController.store);
+routes.post('/students/:id/checkins', CheckInController.store);
 
 routes.post('/enrollments', EnrollmentController.store);
 

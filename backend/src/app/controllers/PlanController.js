@@ -14,6 +14,7 @@ class PlanController {
     const { rows: plans } = await Plan.findAndCountAll({
       limit: quantity,
       offset: (page - 1) * quantity,
+      order: [['created_at', 'DESC']],
     });
 
     return res.json(plans);

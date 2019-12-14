@@ -1,8 +1,9 @@
-import * as Yup from 'yup';
-import { startOfHour, addMonths, parseISO, isAfter } from 'date-fns';
+import { subDays, isAfter } from 'date-fns';
+import { Op } from 'sequelize';
 
 import CheckIn from '../models/CheckIn';
 import Student from '../models/Student';
+import Enrollment from '../models/Enrollment';
 
 // import UserControler from './UserControler';
 
@@ -11,32 +12,54 @@ class CheckInController {
    *  List checkins
    */
   async index(req, res) {
-    try {
-      const { page = 1, quantity = 20 } = req.query;
+    const { page = 1, quantity = 20, id } = req.query;
 
-      const { student_id } = req.params;
+    const checkins = await CheckIn.findAll({
+      where: { student_id: id },
+      limit: quantity,
+      offset: (page - 1) * quantity,
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+    });
 
-      const student = await Student.findByPk(student_id);
+    return res.json(checkins);
+  }
 
-      if (!student) {
-        return res.status(400).json({ error: 'Student not found.' });
-      }
+  async store(req, res) {
+    const { id } = req.params;
 
-      const { checkins } = await CheckIn.findAll({
-        where: { student_id },
-        attributes: ['id', 'created_at'],
-        limit: quantity,
-        offset: (page - 1) * quantity,
-        order: [['created_at', 'DESC']],
-      });
+    // Check if the student is able to enter gym
+    const isStudentAble = await Enrollment.findOne({
+      where: { student_id: id },
+    });
 
-      if (!checkins) {
-        return res.status(400).json({ error: 'No checkins found.' });
-      }
-      return res.json(checkins);
-    } catch (err) {
-      return res.status(400).json({ error: `Applications error. ( ) ` });
+    if (!isStudentAble || !isAfter(isStudentAble.end_date, new Date())) {
+      return res
+        .status(401)
+        .json({ error: 'Your enrollment is not able to join the gym' });
     }
+
+    const checkins = await CheckIn.findAll({
+      where: {
+        student_id: id,
+        created_at: { [Op.between]: [subDays(new Date(), 7), new Date()] },
+      },
+    });
+
+    if (checkins.length >= 5) {
+      return res
+        .status(401)
+        .json({ error: 'You can only check-in five times in a week' });
+    }
+
+    const checkin = await CheckIn.create({ student_id: id });
+
+    return res.json(checkin);
   }
 }
 export default new CheckInController();
