@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import Student from '../models/Student';
-import HelpOrder from '../models/AdminHelpOrder';
+import HelpOrder from '../models/GymHelpOrder';
 
 class HelpOrderController {
   async index(req, res) {
