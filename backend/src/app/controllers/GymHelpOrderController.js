@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import HelpOrder from '../models/HelpOrder';
 import Student from '../models/Student';
 
-import HelpOrderAnswearMail from '../jobs/HelpOrderAnswerMail';
+import HelpOrderAnswerMail from '../jobs/HelpOrderAnswerMail';
 import Queue from '../../lib/Queue';
 
 class HelpOrderController {
@@ -59,7 +59,7 @@ class HelpOrderController {
 
     helporders.answer = answer;
     helporders.answered_at = new Date();
-    helporders.save();
+    await helporders.save();
 
     // const { id } = req.params;
     const students = await HelpOrder.findByPk(id, {
@@ -72,10 +72,10 @@ class HelpOrderController {
       ],
     });
 
-    await Queue.add(HelpOrderAnswearMail.key, {
+    await Queue.add(HelpOrderAnswerMail.key, {
       students,
     });
-
+    console.log('Isso executou...');
     return res.json(helporders);
   }
 }

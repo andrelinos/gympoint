@@ -1,30 +1,18 @@
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+
 import Mail from '../../lib/Mail';
 
-class HelpOrderAnswearMails {
+class HelpOrderAnswerMail {
   get key() {
-    return 'HelpOrderAnswearMail';
+    return 'HelpOrderAnswerMail';
   }
 
+  // All informations for email send
   async handle({ data }) {
     const { helpOrder } = data;
 
-    const answearDate = format(
-      parseISO(helpOrder.answear_at),
-      "dd/MM/yyyy' às 'HH:mm",
-      {
-        locale: pt,
-      }
-    );
-
-    const questionDate = format(
-      parseISO(helpOrder.created_at),
-      "dd/MM/yyyy' às 'HH:mm",
-      {
-        locale: pt,
-      }
-    );
+    console.log(`A fila executou.`);
 
     await Mail.sendMail({
       to: `${helpOrder.student.name} <${helpOrder.student.email}>`,
@@ -33,12 +21,17 @@ class HelpOrderAnswearMails {
       context: {
         student_name: helpOrder.student.name,
         question: helpOrder.question,
-        question_date: questionDate,
-        answear: helpOrder.answear,
-        answear_date: answearDate,
+        answer: helpOrder.answer,
+        answer_at: format(parseISO(helpOrder.answerAt), 'dd/MMMM/yyyy HH:mm', {
+          locale: pt,
+        }),
+        createdAt: format(parseISO(helpOrder.createdAt), 'dd/MMMM/yyyy HH:mm', {
+          locale: pt,
+        }),
+        total: helpOrder.price,
       },
     });
   }
 }
 
-export default new HelpOrderAnswearMails();
+export default new HelpOrderAnswerMail();

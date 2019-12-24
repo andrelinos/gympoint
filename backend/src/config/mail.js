@@ -1,12 +1,14 @@
+require('dotenv/config');
+
 export default {
-  host: 'smtp.mailtrap.io',
-  port: 2525,
-  secure: false,
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  secure: process.env.MAIL_SECURE,
   auth: {
-    user: 'b995efbc7ce284',
-    pass: 'd6c1e57fe3ab57',
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
   },
   default: {
-    from: 'Equipe GymPoint <noreply@gympoint.com>',
+    from: process.env.MAIL_TXT_DEFAULT,
   },
 };
