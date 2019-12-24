@@ -1,5 +1,9 @@
 import * as Yup from 'yup';
 import HelpOrder from '../models/HelpOrder';
+import Student from '../models/Student';
+
+import HelpOrderAnswearMail from '../jobs/HelpOrderAnswerMail';
+import Queue from '../../lib/Queue';
 
 class HelpOrderController {
   /**
@@ -16,7 +20,7 @@ class HelpOrderController {
     });
 
     if (!helporders) {
-      return res.status(400).json({ error: 'No users found.' });
+      return res.status(400).json({ error: 'No student found.' });
     }
 
     return res.json(helporders);
@@ -57,10 +61,20 @@ class HelpOrderController {
     helporders.answered_at = new Date();
     helporders.save();
 
-    /* await queueMicrotask.add(HelpOrderAnswerMails.key, {
-      helporders,
+    // const { id } = req.params;
+    const students = await HelpOrder.findByPk(id, {
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
     });
-     */
+
+    await Queue.add(HelpOrderAnswearMail.key, {
+      students,
+    });
 
     return res.json(helporders);
   }

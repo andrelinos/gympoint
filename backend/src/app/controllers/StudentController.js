@@ -23,13 +23,13 @@ class StudentController {
     return res.json(students);
   }
 
-  async show(req, res) {
+  /*  async show(req, res) {
     const { id } = req.params;
 
     const students = await Student.findByPk(id);
 
     return res.json(students);
-  }
+  } */
 
   /**
    * Create Students
