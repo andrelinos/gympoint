@@ -72,10 +72,11 @@ class HelpOrderController {
       ],
     });
 
+    // Send answer e-mail
     await Queue.add(HelpOrderAnswerMail.key, {
       students,
     });
-    console.log('Isso executou...');
+
     return res.json(helporders);
   }
 }

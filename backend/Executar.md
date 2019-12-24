@@ -1,9 +1,14 @@
 # Comandos iniciais
   - docker start database // inicia o banco de dados da aplicação
-  - docker start mongobarber // inicia o banco não relacional para controle de agendamentos
+  - docker start redisgympoint // inicia o banco não relacional para controle de agendamentos
+
+  # Comandos para redis
+  - /etc/init.d/redis-server stop
+  - /etc/init.d/redis-server start
+  - /etc/init.d/redis-server restart
 
   - yarn dev // rodar a aplicação
-  - yarn queue // tratar as filas de cancelamento e envio de e-mail
+  - yarn queue // tratar as filas de envio de e-mail
 
 # Acessos externos
   - mailtrap.io // servidor de e-mail para testes de envio de e-mail para cancelamentos

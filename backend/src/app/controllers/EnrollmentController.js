@@ -111,6 +111,7 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
+    // recupera campos
     const { student_id, plan_id, start_date } = req.body;
 
     // Verify student exists
@@ -133,28 +134,29 @@ class EnrollmentController {
     }
 
     // Check if this student already has an enrollment
-    const enrollmentExists = await Enrollment.findByPk(req.params);
+    const enrollmentExists = await Enrollment.findByPk(req.params.id);
 
     if (!enrollmentExists) {
       return res.status(401).json({ error: 'No enrollment found.' });
     }
 
     // Calculate  date range and price
-    const { price, duration } = enrollmentExists;
+    const { price, duration } = plan;
     const startDate = startOfHour(parsedDate);
 
     // eslint-disable-next-line no-unused-vars
-    const and_date = addMonths(startDate, duration);
+    const end_date = addMonths(startDate, duration);
     const Price = duration * price;
 
-    const enrollment = await Enrollment.update({
+    const enrollmentsUpdate = await Enrollment.update({
       student_id,
       plan_id,
       start_date,
+      end_date,
       price: Price,
     });
-
-    return res.json(enrollment);
+    console.log(JSON.stringify(`Console Log:  ${enrollmentsUpdate}`));
+    return res.json(enrollmentsUpdate);
   }
 
   /**

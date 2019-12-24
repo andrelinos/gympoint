@@ -16,7 +16,7 @@ class HelpOrderAnswerMail {
 
     await Mail.sendMail({
       to: `${helpOrder.student.name} <${helpOrder.student.email}>`,
-      subject: 'Pergunta respondida - GYMPoint',
+      subject: '[GYMPO)INT] Sua pergunta respondida',
       template: 'help_order_answer',
       context: {
         student_name: helpOrder.student.name,
