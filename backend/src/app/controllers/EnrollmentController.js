@@ -148,15 +148,15 @@ class EnrollmentController {
     const end_date = addMonths(startDate, duration);
     const Price = duration * price;
 
-    const enrollmentsUpdate = await Enrollment.update({
+    const enrollment = await Enrollment.update({
       student_id,
       plan_id,
       start_date,
       end_date,
       price: Price,
     });
-    console.log(JSON.stringify(`Console Log:  ${enrollmentsUpdate}`));
-    return res.json(enrollmentsUpdate);
+    console.log(JSON.stringify(`Console Log:  ${enrollment}`));
+    return res.json(enrollment);
   }
 
   /**
