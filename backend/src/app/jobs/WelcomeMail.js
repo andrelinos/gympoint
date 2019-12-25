@@ -8,10 +8,10 @@ class WelcomeMail {
   }
 
   async handle({ data }) {
-    const { registration, student, plan } = data;
+    const { enrollment, student, plan } = data;
 
     const startDate = format(
-      parseISO(registration.start_date),
+      parseISO(enrollment.start_date),
       "'dia' dd 'de' MMMM' de ' yyyy",
       {
         locale: pt,
@@ -19,7 +19,7 @@ class WelcomeMail {
     );
 
     const endDate = format(
-      parseISO(registration.end_date),
+      parseISO(enrollment.end_date),
       "'dia' dd 'de' MMMM' de ' yyyy",
       {
         locale: pt,
@@ -31,11 +31,11 @@ class WelcomeMail {
       subject: 'Matrícula plano - GYMPoint',
       template: 'welcome',
       context: {
-        student_name: student.name,
+        student_name: enrollment.student.name,
         plan_title: plan.title,
         plan_start_date: startDate,
         plan_end_date: endDate,
-        plan_total_price: registration.price,
+        plan_total_price: enrollment.price,
       },
     });
   }

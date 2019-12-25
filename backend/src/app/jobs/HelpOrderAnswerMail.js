@@ -5,14 +5,30 @@ import Mail from '../../lib/Mail';
 
 class HelpOrderAnswerMail {
   get key() {
-    return 'HelpOrderAnswerMail';
+    return 'HelpOrderAnswerMails';
   }
 
   // All informations for email send
   async handle({ data }) {
     const { helpOrder } = data;
 
-    console.log(`A fila executou.`);
+    const answearDate = format(
+      parseISO(helpOrder.answearAt),
+      "dd/MM/yyyy' às 'HH:mm",
+      {
+        locale: pt,
+      }
+    );
+
+    const questionDate = format(
+      parseISO(helpOrder.createdAt),
+      "dd/MM/yyyy' às 'HH:mm",
+      {
+        locale: pt,
+      }
+    );
+
+    console.log(`A fila executou. ${JSON.stringify(helpOrder.student.name)}`);
 
     await Mail.sendMail({
       to: `${helpOrder.student.name} <${helpOrder.student.email}>`,
@@ -22,12 +38,8 @@ class HelpOrderAnswerMail {
         student_name: helpOrder.student.name,
         question: helpOrder.question,
         answer: helpOrder.answer,
-        answer_at: format(parseISO(helpOrder.answerAt), 'dd/MMMM/yyyy HH:mm', {
-          locale: pt,
-        }),
-        createdAt: format(parseISO(helpOrder.createdAt), 'dd/MMMM/yyyy HH:mm', {
-          locale: pt,
-        }),
+        answered_at: answearDate,
+        createdAt: questionDate,
         total: helpOrder.price,
       },
     });

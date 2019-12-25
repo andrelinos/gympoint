@@ -59,11 +59,11 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    const studentExists = await Student.findOne({
+    const student = await Student.findOne({
       where: { email: req.body.email },
     });
 
-    if (studentExists) {
+    if (student) {
       return res.status(400).json({ error: 'Student already exists.' });
     }
     const { id, name, email, weight, height, birthday } = await Student.create(

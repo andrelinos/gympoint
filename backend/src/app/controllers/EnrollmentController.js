@@ -11,9 +11,6 @@ import WelcomeMail from '../jobs/WelcomeMail';
 // import UserControler from './UserControler';
 
 class EnrollmentController {
-  /**
-   *  List Enrollments
-   */
   async index(req, res) {
     const { page = 1, quantity = 20 } = req.query;
 
@@ -25,10 +22,6 @@ class EnrollmentController {
 
     return res.json(enrollments);
   }
-
-  /**
-   *  Create Enrollment
-   */
 
   async store(req, res) {
     const schema = Yup.object().shape({
@@ -80,9 +73,10 @@ class EnrollmentController {
     const startDate = startOfHour(parsedDate);
 
     const end_date = addMonths(startDate, plan.duration);
+
     const Price = plan.duration * plan.price;
 
-    const enrollments = await Enrollment.create({
+    const enrollment = await Enrollment.create({
       student_id,
       plan_id,
       start_date,
@@ -90,16 +84,14 @@ class EnrollmentController {
       price: Price,
     });
 
+    // Send Welcome e-mail
     await Queue.add(WelcomeMail.key, {
-      enrollments,
+      enrollment,
     });
 
-    return res.json(enrollments);
+    return res.json(enrollment);
   }
 
-  /**
-   *  Update Enrollment
-   */
   async update(req, res) {
     const schema = Yup.object().shape({
       student_id: Yup.number().required(),
@@ -111,7 +103,7 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    // recupera campos
+    // Req fields
     const { student_id, plan_id, start_date } = req.body;
 
     // Verify student exists
@@ -134,9 +126,9 @@ class EnrollmentController {
     }
 
     // Check if this student already has an enrollment
-    const enrollmentExists = await Enrollment.findByPk(req.params.id);
+    const enrollment = await Enrollment.findByPk(req.params.id);
 
-    if (!enrollmentExists) {
+    if (!enrollment) {
       return res.status(401).json({ error: 'No enrollment found.' });
     }
 
@@ -144,24 +136,20 @@ class EnrollmentController {
     const { price, duration } = plan;
     const startDate = startOfHour(parsedDate);
 
-    // eslint-disable-next-line no-unused-vars
     const end_date = addMonths(startDate, duration);
     const Price = duration * price;
 
-    const enrollment = await Enrollment.update({
+    await enrollment.update({
       student_id,
       plan_id,
       start_date,
       end_date,
       price: Price,
     });
-    console.log(JSON.stringify(`Console Log:  ${enrollment}`));
+
     return res.json(enrollment);
   }
 
-  /**
-   *  Delete Enrollment
-   */
   async delete(req, res) {
     const enrollments = await Enrollment.findByPk(req.params.id);
 
@@ -171,9 +159,7 @@ class EnrollmentController {
 
     await enrollments.destroy();
 
-    return res.status(400).json({ ok: 'Enrollment deleted successfully!' });
-
-    // return res.send();
+    return res.status(200).json({ ok: 'Enrollment deleted successfully!' });
   }
 }
 export default new EnrollmentController();
