@@ -23,14 +23,6 @@ class StudentController {
     return res.json(students);
   }
 
-  /*  async show(req, res) {
-    const { id } = req.params;
-
-    const students = await Student.findByPk(id);
-
-    return res.json(students);
-  } */
-
   /**
    * Create Students
    */
@@ -59,11 +51,11 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    const student = await Student.findOne({
+    const studentExists = await Student.findOne({
       where: { email: req.body.email },
     });
 
-    if (student) {
+    if (studentExists) {
       return res.status(400).json({ error: 'Student already exists.' });
     }
     const { id, name, email, weight, height, birthday } = await Student.create(

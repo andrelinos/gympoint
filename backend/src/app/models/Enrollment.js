@@ -5,8 +5,8 @@ class Enrollment extends Model {
   static init(sequelize) {
     super.init(
       {
-        student_id: Sequelize.STRING,
-        plan_id: Sequelize.STRING,
+        /*         student_id: Sequelize.STRING,
+        plan_id: Sequelize.STRING, */
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
         price: Sequelize.DECIMAL,

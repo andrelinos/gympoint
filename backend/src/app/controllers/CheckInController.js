@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { subDays, isAfter, addDays, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { Op } from 'sequelize';
@@ -33,6 +34,15 @@ class CheckInController {
       order: [['created_at', 'DESC']],
     });
 
+    /*
+    const countCheckins = await checkins.length;
+
+    const jsons = new Array(0);
+    jsons.push(checkins);
+    jsons.push(countCheckins);
+    return res.json(jsons);
+    */
+
     return res.json(checkins);
   }
 
@@ -65,23 +75,9 @@ class CheckInController {
         where: { student_id: id },
         offset: 4,
       });
-      const nextAvailableCheckin = addDays(lastCheckin.created_at, 7);
-
-      console.log(
-        `Estou aqui: >>>>>>>>>>>>>>>>>> ${lastCheckin}  ${nextAvailableCheckin} <<<<<<<<<<<<<<<<<<<<<<<<<<<<`
-      );
-
-      const formatedNextAvaliableCheckin = format(
-        nextAvailableCheckin,
-        'dd/MM/yyyy HH:mm',
-        {
-          locale: pt,
-        }
-      );
 
       return res.status(401).json({
-        error: `You can only check-in five times in a week. You next check-in
-        `,
+        error: `You can only check-in 5 times in 7 days. You next check-in`,
       });
     }
 

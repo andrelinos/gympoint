@@ -37,11 +37,11 @@ class EnrollmentController {
     const { student_id, plan_id, start_date } = req.body;
 
     // Check if this student already has an enrollment
-    const enrollmentExists = await Enrollment.findOne({
+    const enrollmentExist = await Enrollment.findOne({
       where: { student_id },
     });
 
-    if (enrollmentExists) {
+    if (enrollmentExist) {
       return res.status(401).json({
         error: 'A enrollment with this student already exists.',
       });
@@ -60,8 +60,8 @@ class EnrollmentController {
     }
 
     // Verify date to start is incorrect
-    const parsedDate = parseISO(start_date);
-    const past = isAfter(parsedDate, new Date());
+    // const parsedDate = parseISO(start_date);
+    const past = isAfter(parseISO(start_date), new Date());
 
     if (!past) {
       return res.json({ error: 'Incorrect start date or time.' });
@@ -70,31 +70,35 @@ class EnrollmentController {
     // Calculate  date range and price
     const plan = await Plan.findByPk(plan_id);
 
-    const startDate = startOfHour(parsedDate);
+    // const start_date = startOfHour(parsedDate);
 
-    const end_date = addMonths(startDate, plan.duration);
+    const end_date = addMonths(parseISO(start_date), plan.duration);
 
     const Price = plan.duration * plan.price;
 
-    const enrollment = await Enrollment.create({
-      student_id,
-      plan_id,
-      start_date,
-      end_date,
-      price: Price,
-    });
+    const enrollment = await Enrollment.create(req.body);
 
     // Send Welcome e-mail
+    /* await Queue.add(WelcomeMail.key, {
+      enrollment,
+    }); */
+
+    /** Email */
     await Queue.add(WelcomeMail.key, {
       enrollment,
+      student,
+      plan,
+      Price,
+      start_date,
+      end_date,
     });
 
-    return res.json(enrollment);
+    return res.json(Enrollment);
   }
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      student_id: Yup.number().required(),
+      /* student_id: Yup.number().required(), */
       plan_id: Yup.number().required(),
       start_date: Yup.date().required(),
     });
@@ -104,13 +108,13 @@ class EnrollmentController {
     }
 
     // Req fields
-    const { student_id, plan_id, start_date } = req.body;
+    const { /* student_id, */ plan_id, start_date } = req.body;
 
     // Verify student exists
-    const studentExists = await Student.findByPk(student_id);
-    if (!studentExists) {
+    /* const student = await Student.findByPk(student_id);
+    if (!student) {
       return res.status(400).json({ error: 'No stundent found.' });
-    }
+    } */
 
     // Verify plan exists
     const plan = await Plan.findByPk(plan_id);
@@ -140,7 +144,7 @@ class EnrollmentController {
     const Price = duration * price;
 
     await enrollment.update({
-      student_id,
+      /*   student_id, */
       plan_id,
       start_date,
       end_date,

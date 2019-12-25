@@ -1,20 +1,28 @@
+<div style="padding: 20 0; margin: 0 auto; width: 500px;">
 <p>
-  Olá, <strong>{{{ student }}}</strong>!
+<img src="https://github.com/Rocketseat/bootcamp-gostack-desafio-03/raw/master/.github/logo.png" alt="Logo GymPoint">
+</p>
+
+<p>
+  <h2>Olá, {{{ student_name }}}!</h2>
 </p>
 
 <p>O seu pedido de auxílio foi respondido! Confira as informações abaixo:</p>
 
-<div style="padding: 30px; font-size: 12px; color: #222;">
-  [{{ student }}]: {{ question }}
+<p>  <strong>Sua pergunta: </strong> {{ question }} </p>
   <br>
-  <small>
-    Enviado {{ created_at }}
-  </small>
-  <div style="margin: 30px; color: #d62b45; font-weight: bold;">
-    [GymPoint]: {{ answer }}
+  <span>
+    <hr>
+    Enviado {{ createdAt }}
+  </span>
+  <p>
+    <strong>Resposta de [GymPoint]:</strong> {{ answer }}
     <br>
-    <small>
-      Respondido {{ answered_at }}
-    </small>
-  </div>
+    <hr>
+    <span>
+    Respondido em {{ answered_at }}
+    </span>
+  </p>
 </div>
+</div>
+

@@ -17,6 +17,9 @@ class Student extends Model {
 
     return this;
   }
-}
 
+  checkEmail(oldEmail) {
+    return oldEmail === this.email;
+  }
+}
 export default Student;

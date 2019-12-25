@@ -12,9 +12,9 @@ class HelpOrderAnswerMail {
   async handle({ data }) {
     const { helpOrder } = data;
 
-    const answearDate = format(
-      parseISO(helpOrder.answearAt),
-      "dd/MM/yyyy' às 'HH:mm",
+    const answerDate = format(
+      parseISO(helpOrder.answered_at),
+      "'dia' dd 'de' MMMM', às' H:mm'h'",
       {
         locale: pt,
       }
@@ -22,23 +22,21 @@ class HelpOrderAnswerMail {
 
     const questionDate = format(
       parseISO(helpOrder.createdAt),
-      "dd/MM/yyyy' às 'HH:mm",
+      "'dia' dd 'de' MMMM', às' H:mm'h'",
       {
         locale: pt,
       }
     );
 
-    console.log(`A fila executou. ${JSON.stringify(helpOrder.student.name)}`);
-
     await Mail.sendMail({
       to: `${helpOrder.student.name} <${helpOrder.student.email}>`,
-      subject: '[GYMPO)INT] Sua pergunta respondida',
+      subject: '[GYMPOINT] Sua pergunta respondida',
       template: 'help_order_answer',
       context: {
         student_name: helpOrder.student.name,
         question: helpOrder.question,
         answer: helpOrder.answer,
-        answered_at: answearDate,
+        answered_at: answerDate,
         createdAt: questionDate,
         total: helpOrder.price,
       },

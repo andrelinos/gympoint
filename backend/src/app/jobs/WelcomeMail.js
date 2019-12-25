@@ -8,7 +8,13 @@ class WelcomeMail {
   }
 
   async handle({ data }) {
-    const { enrollment, student, plan } = data;
+    const { enrollment, student, plan, Price, start_date, end_date } = data;
+
+    console.log(`Console LOG (DATA) ${JSON.stringify(data)} "\n\n"`);
+
+    console.log(`Console LOG (STUDENT) ${JSON.stringify(student)} "\n\n"`);
+
+    console.log(`Console LOG (PLAN) ${JSON.stringify(plan)} "\n\n"`);
 
     const startDate = format(
       parseISO(enrollment.start_date),
@@ -28,10 +34,10 @@ class WelcomeMail {
 
     await Mail.sendMail({
       to: `${student.name} <${student.email}>`,
-      subject: 'Matrícula plano - GYMPoint',
+      subject: '[GYMPOINT] Seja bem vindo!',
       template: 'welcome',
       context: {
-        student_name: enrollment.student.name,
+        student_name: student.name,
         plan_title: plan.title,
         plan_start_date: startDate,
         plan_end_date: endDate,
